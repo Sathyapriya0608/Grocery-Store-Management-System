@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">Welcome, {{ session['username'] }}!</h1>
+
+<div class="card" style="padding: 20px; margin-bottom: 30px;">
+    <h2 style="margin-bottom: 20px;">Featured Products</h2>
+    <div class="row">
+        {% for product in featured_products %}
+        <div class="col-3">
+            <div class="card" style="margin-bottom: 20px;">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" class="card-img" alt="{{ product.name }}">
+                {% else %}
+                <div style="height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center;">
+                    <span>No Image Available</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-price">₹{{ "%.2f"|format(product.price) }}</p>
+                    <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card" style="padding: 20px;">
+    <h2 style="margin-bottom: 20px;">Shop by Category</h2>
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-3">
+            <div class="card" style="text-align: center; padding: 20px; margin-bottom: 20px;">
+                <h3>{{ category }}</h3>
+                <a href="{{ url_for('user_products') }}?category={{ category }}" class="btn btn-outline">Browse</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

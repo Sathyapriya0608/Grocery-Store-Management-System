@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">Your Shopping Cart</h1>
+
+{% if cart %}
+<div class="card" style="padding: 20px; margin-bottom: 30px;">
+    <form method="POST" action="{{ url_for('update_cart') }}">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product_id, item in cart.items() %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>₹{{ "%.2f"|format(item.price) }}</td>
+                        <td>
+                            <input type="number" name="quantity_{{ product_id }}" value="{{ item.quantity }}" min="1" class="form-control" style="width: 70px;">
+                        </td>
+                        <td>₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+                        <td>
+                            <form action="{{ url_for('remove_from_cart', product_id=product_id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">Subtotal:</td>
+                        <td colspan="2" style="font-weight: bold;">₹{{ "%.2f"|format(total) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button type="submit" class="btn btn-outline">Update Cart</button>
+            <a href="{{ url_for('user_products') }}" class="btn btn-outline">Continue Shopping</a>
+            <a href="{{ url_for('checkout') }}" class="btn">Proceed to Checkout</a>
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="card" style="padding: 40px; text-align: center;">
+    <h3>Your cart is empty</h3>
+    <p>Start shopping to add items to your cart</p>
+    <a href="{{ url_for('user_products') }}" class="btn" style="margin-top: 20px;">Browse Products</a>
+</div>
+{% endif %}
+{% endblock %}

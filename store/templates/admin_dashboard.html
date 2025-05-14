@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">Admin Dashboard</h1>
+
+<div class="row">
+    <div class="col-4">
+        <div class="card dashboard-card">
+            <h3>{{ product_count }}</h3>
+            <p>Total Products</p>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-outline">View Products</a>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card dashboard-card">
+            <h3>{{ user_count }}</h3>
+            <p>Registered Customers</p>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card dashboard-card">
+            <h3>{{ order_count }}</h3>
+            <p>Total Orders</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding: 20px; margin-bottom: 30px;">
+            <h2 style="margin-bottom: 20px;">Low Stock Products</h2>
+            
+            {% if low_stock %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Stock Quantity</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in low_stock %}
+                                <tr>
+                                    <td>{{ product.id }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.category or 'N/A' }}</td>
+                                    <td>
+                                        <span style="color: {% if product.stock_quantity < 5 %}var(--danger-color){% else %}var(--warning-color){% endif %}; font-weight: bold;">
+                                            {{ product.stock_quantity }}
+                                        </span>
+                                    </td>
+                                    <td>₹{{ "%.2f"|format(product.price) }}</td>
+                                    <td>
+                                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>All products have sufficient stock levels.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Quick Actions</h2>
+                <a href="{{ url_for('add_product') }}" class="btn">Add New Product</a>
+            </div>
+            
+            <div class="row">
+                <div class="col-4">
+                    <div class="card" style="text-align: center; padding: 20px; height: 100%;">
+                        <h3>Products</h3>
+                        <p>Manage your store's products</p>
+                        <a href="{{ url_for('admin_products') }}" class="btn btn-outline">Manage Products</a>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card" style="text-align: center; padding: 20px; height: 100%;">
+                        <h3>Categories</h3>
+                        <p>Organize products by categories</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card" style="text-align: center; padding: 20px; height: 100%;">
+                        <h3>Reports</h3>
+                        <p>View sales and inventory reports</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .quick-action-card {
+        text-align: center;
+        padding: 20px;
+        margin-bottom: 20px;
+        height: 100%;
+    }
+    
+    .quick-action-card h3 {
+        margin-bottom: 10px;
+    }
+    
+    .quick-action-card p {
+        margin-bottom: 15px;
+        color: var(--gray-color);
+    }
+</style>
+
+<script>
+    // Auto-refresh dashboard every 60 seconds
+    setTimeout(function() {
+        window.location.reload();
+    }, 60000);
+</script>
+{% endblock %}

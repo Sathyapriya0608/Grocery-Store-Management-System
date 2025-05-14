@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Store - {% block title %}{% endblock %}</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #388E3C;
+            --accent-color: #8BC34A;
+            --light-color: #F1F8E9;
+            --dark-color: #1B5E20;
+            --danger-color: #F44336;
+            --warning-color: #FFC107;
+            --info-color: #2196F3;
+            --gray-color: #9E9E9E;
+            --white-color: #FFFFFF;
+            --black-color: #212121;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--black-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--white-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: var(--white-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--light-color);
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .flash-message {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            color: var(--white-color);
+            animation: slideIn 0.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .flash-success {
+            background-color: var(--primary-color);
+        }
+        
+        .flash-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .flash-warning {
+            background-color: var(--warning-color);
+            color: var(--black-color);
+        }
+        
+        .flash-info {
+            background-color: var(--info-color);
+        }
+        
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            color: var(--white-color);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #D32F2F;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--black-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #FFA000;
+        }
+        
+        /* Form styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        /* Card styles */
+        .card {
+            background-color: var(--white-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--black-color);
+        }
+        
+        .card-text {
+            color: var(--gray-color);
+            margin-bottom: 15px;
+        }
+        
+        .card-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        /* Grid system */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        
+        .col {
+            padding: 0 15px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .col-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+        
+        .col-4 {
+            flex: 0 0 33.333%;
+            max-width: 33.333%;
+        }
+        
+        .col-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+        
+        .col-8 {
+            flex: 0 0 66.666%;
+            max-width: 66.666%;
+        }
+        
+        /* Dashboard cards */
+        .dashboard-card {
+            text-align: center;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card h3 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .dashboard-card p {
+            font-size: 18px;
+            color: var(--gray-color);
+        }
+        
+        /* Table styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .table th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+        
+        .table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .col-3, .col-4, .col-6, .col-8 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+        .footer {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+.login-container {
+    margin-top: 50px;
+}
+
+.login-card-wrapper {
+    margin: 0 auto;
+    float: none;
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-button {
+    width: 100%;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+}
+.rupee {
+    font-family: Arial, sans-serif; /* Ensures ₹ displays correctly */
+    margin-right: 2px;
+}
+/* Status badges */
+.badge.bg-success { background-color: var(--primary-color); }
+.badge.bg-warning { background-color: var(--warning-color); }
+.badge.bg-danger { background-color: var(--danger-color); }
+
+/* Table enhancements */
+.table-responsive { overflow-x: auto; }
+.table-hover tbody tr:hover { background-color: rgba(0,0,0,0.02); }
+
+/* Enhanced Status Filter Navigation */
+.status-filter-container {
+    margin-bottom: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.status-filter-nav {
+    display: flex;
+    gap: 5px;
+}
+
+.status-filter-btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px 15px;
+    background: white;
+    border-radius: 8px;
+    color: #495057;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+}
+
+.status-filter-btn:hover {
+    background: #f1f1f1;
+    transform: translateY(-2px);
+}
+
+.status-filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filter-count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.status-filter-btn.active .filter-count {
+    color: white;
+}
+
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="{{ url_for('home') }}" class="logo">Grocery Store</a>
+            <nav>
+                <ul>
+                    {% if 'user_id' in session %}
+                        {% if session['role'] == 'admin' %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                            <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+                            <li><a href="{{ url_for('admin_orders') }}">Orders</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('user_dashboard') }}">Home</a></li>
+                            <li><a href="{{ url_for('user_products') }}">Products</a></li>
+                            <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                            <li><a href="{{ url_for('user_orders') }}">My Orders</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Grocery Store Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.flash-message');
+            messages.forEach(msg => {
+                msg.style.animation = 'slideOut 0.5s forwards';
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

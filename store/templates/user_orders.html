@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">My Orders</h1>
+
+{% if orders %}
+<div class="card" style="padding: 20px;">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order </th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+                    <td>
+                        <span class="badge" style="
+                            background-color: 
+                            {% if order.status == 'completed' %}var(--primary-color)
+                            {% elif order.status == 'cancelled' %}var(--danger-color)
+                            {% else %}var(--warning-color){% endif %};
+                            color: white;
+                            padding: 5px 10px;
+                            border-radius: 20px;
+                            font-size: 14px;
+                        ">
+                            {{ order.status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('order_details', order_id=order.id) }}" class="btn btn-outline">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card" style="padding: 40px; text-align: center;">
+    <h3>You haven't placed any orders yet</h3>
+    <p>Start shopping to place your first order</p>
+    <a href="{{ url_for('user_products') }}" class="btn" style="margin-top: 20px;">Browse Products</a>
+</div>
+{% endif %}
+{% endblock %}

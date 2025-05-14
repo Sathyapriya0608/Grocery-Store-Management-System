@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 30px;">Order {{ order.id }}</h1>
+
+<div class="row">
+    <div class="col-8">
+        <div class="card" style="padding: 20px; margin-bottom: 30px;">
+            <h2 style="margin-bottom: 20px;">Order Items</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>₹{{ "%.2f"|format(item.price) }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ "%.2f"|format(item.total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" style="text-align: right; font-weight: bold;">Order Total:</td>
+                            <td style="font-weight: bold;">₹{{ "%.2f"|format(order.total_amount) }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card" style="padding: 20px;">
+            <h2 style="margin-bottom: 20px;">Order Information</h2>
+            <div style="margin-bottom: 20px;">
+                <p><strong>Order Date:</strong> {{ order.created_at.strftime('%B %d, %Y %I:%M %p') }}</p>
+                <p><strong>Status:</strong> 
+                    <span style="
+                        background-color: 
+                        {% if order.status == 'completed' %}var(--primary-color)
+                        {% elif order.status == 'cancelled' %}var(--danger-color)
+                        {% else %}var(--warning-color){% endif %};
+                        color: white;
+                        padding: 3px 8px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                    ">
+                        {{ order.status|title }}
+                    </span>
+                </p>
+            </div>
+            
+            <a href="{{ url_for('user_orders') }}" class="btn btn-outline" style="width: 100%; margin-top: 20px;">Back to Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

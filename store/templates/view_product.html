@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            {% if product.image_url %}
+            <img src="{{ product.image_url }}" class="card-img" alt="{{ product.name }}" style="height: 400px;">
+            {% else %}
+            <div style="height: 400px; background-color: #eee; display: flex; align-items: center; justify-content: center;">
+                <span>No Image Available</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card" style="padding: 20px; height: 100%;">
+            <h2>{{ product.name }}</h2>
+            <p style="font-size: 24px; color: var(--primary-color); margin: 20px 0;">₹{{ "%.2f"|format(product.price) }}</p>
+            
+            <div style="margin-bottom: 20px;">
+                <span style="font-weight: bold;">Availability:</span>
+                {% if product.stock_quantity > 0 %}
+                <span style="color: var(--primary-color);">In Stock ({{ product.stock_quantity }} available)</span>
+                {% else %}
+                <span style="color: var(--danger-color);">Out of Stock</span>
+                {% endif %}
+            </div>
+            
+            {% if product.category %}
+            <div style="margin-bottom: 20px;">
+                <span style="font-weight: bold;">Category:</span>
+                <a href="{{ url_for('user_products') }}?category={{ product.category }}" style="color: var(--primary-color);">
+                    {{ product.category }}
+                </a>
+            </div>
+            {% endif %}
+            
+            <div style="margin-bottom: 30px;">
+                <h4>Description</h4>
+                <p>{{ product.description or 'No description available.' }}</p>
+            </div>
+            
+            {% if product.stock_quantity > 0 %}
+            <form method="POST" action="{{ url_for('cart') }}">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+            </form>
+            {% endif %}
+            
+            <a href="{{ url_for('user_products') }}" class="btn btn-outline" style="width: 100%; margin-top: 15px;">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
